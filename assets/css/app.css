@@ -1,0 +1,48 @@
+html{
+    overflow-y:hidden;
+}
+body{
+    background: linear-gradient(rgb(0 0 0),rgb(0 0 0 / 52%)),url('https://e1.pxfuel.com/desktop-wallpaper/377/185/desktop-wallpaper-clouds-ocean-artwork-thousand-sunny-one-piece-ship-one-piece-boat.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color:#fff;
+}
+#search{
+width: 80%;
+height: 50px;
+border: 1px solid #f76a6a;
+border-radius: 20px;
+background: #e5e4e4;
+color: #362f2f;
+font-size: 20px;
+padding-left: 10px;
+margin: 1;
+padding-bottom: 5px;
+}
+.bg-opacity{
+   height:800px;
+}
+.live-search-result{
+max-height: 250px;
+width: 80%;
+background: #222;
+border-radius: 20px;
+overflow-y: auto;
+}
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+
+/* Track styles */
+::-webkit-scrollbar-track {
+background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+background-color: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background-color: #555;
+}
