@@ -41,7 +41,7 @@
                     <div class="poster" id="poster">
                         <div class="img" height="200"></div>
                     </div>
-                    <div class="watch-btn pt-2">
+                    <div class="watch-btn pt-3">
                         <a href="watch.php?type=anime&id=<?php echo $anime_id;?>&episode=1&title=<?php echo $anime_title;?>">
                             <button type="button" name="" id="watch" class="btn btn-danger">Watch Episode</button>
                         </a>
@@ -134,8 +134,8 @@
                             $("#sub").html(data[0].sub);
                             $("#title_input").val(title);
 
-                            $(".watch-btn").html(`<a href="watch.php?type=anime&id=<?php echo $anime_id;?>&episode=1&tot_eps=`+ data[0].total_episode +`">
-                                <input type="btn" name="" id="watch" class="btn btn-danger" value="Watch Episode">
+                            $(".watch-btn").html(`<a href="watch.php?type=anime&id=<?php echo $anime_id;?>&episode=1&tot_eps=`+ data[0].total_episode +`&title=<?php echo $anime_title;?>">
+                                <button type="button" name="" id="watch" class="btn btn-danger col-6">Watch Episode</button>
                             </a>`);
 
                            window.title_in = title;
