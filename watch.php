@@ -45,20 +45,56 @@
         max-height: 400px;
         overflow:auto;
     }
+    .section_heading
+    {
+        border-radius: 10px;
+        padding: 6px 4px 4px 20px;
+    }
+    .section_heading span img{
+        width: 40px;
+        position: absolute;
+        margin-left: -20px;
+        margin-top: -26px;
+    }
+    .section_heading h5{
+        padding-left:20px;
+    }
 </style>
 <body>
     <div class="bg-opacity">
         <div class="my-5 container">
         <?php include('header.php');?>
-            <div class="test"></div>
+
             <div class="col-12 py-3 text-center">
                 <div class="header-title py-3">
                     <h2>
                         Watch <span class="title"><?php echo $anime_title; ?></span> Episode <?php echo $episode;?>
                     </h2>
                 </div>
+                <div class="row pb-2">
+                    <div class="col-lg-3 col-3 text-start download_btn">
+                        
+                    </div>
+                    <div class="col-lg-9 col-9 text-end">
+                        <span class="text-danger">
+                            Please Wait 5 sec for Player Loading.
+                        </span>
+                    </div>
+                    <!-- <div class="col-lg-2 col-4 text-end">
+                        <select name="" id="" class="form-control">
+                            <option disabled selected>Change Server</option>
+                            <option value="1">Server 1</option>
+                            <option value="2">Server 2</option>
+                        </select>
+                    </div> -->
+                </div>
                 <div class="video-frame">
-                    <iframe src="https:\/\/database.gdriveplayer.us\/player.php?type=anime&id=<?php echo $anime_id;?>&episode=<?php echo $episode;?>" allowFullScreen="true" frameborder="0" width="100%" height="320" id="tsianime_video"></iframe>
+                    <iframe src="https:\/\/database.gdriveplayer.us\/player.php?type=anime&id=<?php echo $anime_id;?>&episode=<?php echo $episode;?>" allowFullScreen="true" frameborder="0" width="100%" height="320" webkitallowfullscreen mozallowfullscreen></iframe>
+                </div>
+                <div class="col-12 py-3">
+                    <span>Change Server : </span>
+                    <button class="btn btn-warning btn-sm tsi_server1" disabled>Server 1</button>
+                    <button class="btn btn-danger btn-sm tsi_server2">Server 2</button>
                 </div>
                 <div class="tag-msg pt-2 row">
                         <div class="col-3 text-start">
@@ -88,6 +124,10 @@
                             ?>
                         </div>
                 </div>
+            </div>
+            <div class="col-12 bg-secondary section_heading my-3">
+                <span><img src="assets/img/luffy.png" alt=""></span>
+                <h5>Anime Info</h5>
             </div>
             <div class="row pt-3">
                 <div class="col-lg-4 text-center">
@@ -162,13 +202,18 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="col-12 bg-secondary section_heading my-3">
+                    <span><img src="assets/img/zoro.png" alt=""></span>
+
+                    <h5>Episodes List</h5>
+                </div>
                 <div class="col-12">
                     <div class="more-episodes-list">
                         <?php
                             for ($i = 1; $i <= $numEpisodes; $i++) {
                                 $episodeNumber = str_pad($i, 2, "0", STR_PAD_LEFT); // Pad single-digit numbers with leading zero
                                 $activeClass = ($i == $episode) ? "active" : ""; 
-                                $episodeButton = '<a href="watch.php?id='.$anime_id.'&episode='.$i.'&tot_eps='.$numEpisodes.'" class="m-1 episode-btn btn btn-danger '.$activeClass.'">E'.$episodeNumber.'</a>';
+                                $episodeButton = '<a href="watch.php?id='.$anime_id.'&episode='.$i.'&tot_eps='.$numEpisodes.'&title='.$anime_title.'" class="m-1 episode-btn btn btn-danger '.$activeClass.'">E'.$episodeNumber.'</a>';
                                 echo $episodeButton;
                             }
                         ?>
@@ -188,8 +233,6 @@
 
     <script>
         $(document).ready(function () {
-            
-
             var anime_id = '<?php echo $anime_id; ?>';
             $.getJSON('https://api.gdriveplayer.us/v1/animes/id/' + anime_id,
                         function (data) {
@@ -207,18 +250,55 @@
                             
                             window.title_in = title;
                         }).then(function(){
+                            
+                            var link = '<?php $link = $anime_title.'-episode-'.$episode;
+                                               $strrrepl = str_replace([' ', '(', ')'], ['-', '', ''], $link);
+                                                echo $strrrepl; ?>';
+                            window.link_i = link;
+                            var fd = new FormData();
+
+                            fd.append('link', link);
+
+                            $.ajax({
+                                url: 'ajax/get-episode-download-id.php',
+                                data: fd,
+                                type:'post',
+                                contentType: false,
+                                processData: false,
+                                success: function (response) 
+                                {
+                                    console.log(response);
+                                    data = JSON.parse(response);
+                                    if(data.status == 'Ok'){
+                                        $('.download_btn').html(`<a href="https://gotaku1.com/download?id=${data.id}&typesub=TSI_Anime&title=${link}" style="cursor:pointer;" target="_blank">
+                                            <button class="btn btn-danger btn-sm">
+                                                Download
+                                            </button>
+                                        </a>`);
+                                        $(".tsi_server2").attr('data-gogoID', data.id);
+                                    }
+                                    else
+                                    {
+                                        $('.download_btn').html(`
+                                            <button class="btn btn-danger btn-sm" disabled>
+                                               No Download Option
+                                            </button>
+                                        `);
+                                        $(".tsi_server2").addClass('d-none');
+
+                                    }
+                                }
+                            });
+                        }).then(function(){
                             var anime_title = window.title_in;
                             
                             var views = $("#views").html();
                             var episode_number = '<?php echo $episode;?>';
-
                             var fd = new FormData();
-
                             fd.append('anime_id', anime_id);
                             fd.append('anime_title', anime_title);
                             fd.append('episode_number', episode_number);
                             fd.append('views', views);
-
                             $.ajax({
                                 url: 'ajax/views.php',
                                 data: fd,
@@ -231,59 +311,28 @@
                                 }
                             });
                         })
-                        // .then(function(){
-                        //     var numEpisodes = $("#tot_eps").val();
-                        // var activeEpisode = '<?php echo $episode;?>'; // Specify the episode number for which you want to add the "active" class
                         
-                        // for (var i = 1; i <= numEpisodes; i++) {
-                        //     var episodeNumber = ("0" + i).slice(-2); // Pad single-digit numbers with leading zero
+                        $('body').on('click', '.tsi_server2', function(){
+                            console.log('test');
+                            var gogoID = $(this).attr('data-gogoID');
+                            console.log(gogoID);
+                            var link = window.link_i;
+                            $(".video-frame").html(`
+                                <iframe src="https://gotaku1.com/streaming.php?id=`+ gogoID +`&typesub=TSI_Anime&title=`+ link +`" allowFullScreen="true" frameborder="0" width="100%" webkitallowfullscreen mozallowfullscreen></iframe>
+                            `);
+                            $('.tsi_server2').removeClass('btn-danger').addClass('btn-warning').prop('disabled', true);
+                            $('.tsi_server1').removeClass('btn-wrning').addClass('btn-danger').prop('disabled', false);
+                        });
+                        $('body').on('click', '.tsi_server1', function(){
                             
-                        //     var activeClass = (i === activeEpisode) ? "active" : ""; // Check if the current episode is the active one
-                            
-                        //     var episodeButton = $('<a>', {
-                        //     href: "#",
-                        //     class: "m-1 episode-btn btn btn-danger " + activeClass,
-                        //     text: "E" + episodeNumber
-                        //     });
-                            
-                        //     $('.more-episodes-list').append(episodeButton);
-                        // }
-                        // })
-                        
-                    //     const element = document.getElementsByClassName('jw-icon-fullscreen');
+                            $(".video-frame").html(`
+                                <iframe src="https:\/\/database.gdriveplayer.us\/player.php?type=anime&id=<?php echo $anime_id;?>&episode=<?php echo $episode;?>" allowFullScreen="true" frameborder="0" width="100%" height="320" webkitallowfullscreen mozallowfullscreen></iframe>
+                            `);
+                            $('.tsi_server1').removeClass('btn-danger').addClass('btn-warning').prop('disabled', true);
+                            $('.tsi_server2').removeClass('btn-wrning').addClass('btn-danger').prop('disabled', false);
+                        });
 
-                    // element.addEventListener('click', () => {
-                    //   if (element.requestFullscreen) {
-                    //     element.requestFullscreen();
-                    //   } else if (element.mozRequestFullScreen) {
-                    //     element.mozRequestFullScreen();
-                    //   } else if (element.webkitRequestFullscreen) {
-                    //     element.webkitRequestFullscreen();
-                    //   } else if (element.msRequestFullscreen) {
-                    //     element.msRequestFullscreen();
-                    //   }
-                    // });
-                    // var test_get_gogo = $('#show-server .list-server-items').html();
-                    // tsianime_video
-                    // console.log(test_get_gogo);
-
-                    // Assuming you have an iframe with the ID "my-iframe"
-                    var iframe = $('#tsianime_video')[0];
-                    var iframeContent = iframe.contentDocument || iframe.contentWindow.document;
-
-                    // Select an element with a specific ID within the iframe
-                    var elementInIframe = $(iframeContent).find('#show-server .list-server-items');
-
-                    // Check if the element exists and perform further actions
-                    if (elementInIframe.length > 0) {
-                    // Access the properties or manipulate the element as needed
-                        elementInIframe.css('color', 'red');
-                        console.log(elementInIframe);
-                    } else {
-                    console.log('Element not found within the iframe.');
-                    }
-
-        });
+        })
     </script>
 </body>
 
