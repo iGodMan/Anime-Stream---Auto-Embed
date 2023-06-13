@@ -1,5 +1,10 @@
 # Anime Stream
 Anime Stream - with Gdriveplayer API - Autoembed Anime by iGodMan
+# New Features
+<ul>
+  <li>Download Option Added (gogoanime download link - vidstreaming)</li>
+  <li>Server2 Added for Streaming (gogoanime video player)</li>
+ </ul>
 # Screenshots
 <img src="https://i.imgur.com/nIZbTMx.png">
 <img src="https://i.imgur.com/XhaPASS.png">
@@ -9,5 +14,5 @@ Anime Stream - with Gdriveplayer API - Autoembed Anime by iGodMan
 <ul>
   <li>Auto Embed Episodes</li>
   <li>Live Ajax Search</li>
-  </ul>
+ </ul>
 
